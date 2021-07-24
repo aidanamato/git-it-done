@@ -1,4 +1,5 @@
 var issueContainerEl = document.querySelector("#issues-container");
+var limitWarningEl = document.querySelector("#limit-warning");
 
 var getRepoIssues = function(repo) {
   var apiUrl = "https://api.github.com/repos/" + repo + "/issues?direction=asc";
@@ -7,6 +8,10 @@ var getRepoIssues = function(repo) {
     if (response.ok) {
       response.json().then(function(data) {
         displayIssues(data);
+
+        if (response.headers.get("Link")) {
+          displayWarning(repo);
+        }
       });
     } else {
       alert("There was a problem with your request");
@@ -50,4 +55,8 @@ var displayIssues = function(issues) {
   }
 };
 
-getRepoIssues("aidanamato/horiseon");
+var displayWarning = function(repo) {
+  limitWarningEl.innerHTML = "To see more than 30 issues, click <a href='https://github.com/" + repo + "/issues' target='_blank'>here</a>."
+};
+
+getRepoIssues("facebook/react");
